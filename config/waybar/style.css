@@ -1,0 +1,33 @@
+* {
+  font-family: JetBrainsMono Nerd Font, sans-serif;
+  font-size: 13px;
+  color: #eeeeee;
+  border: none;
+}
+
+window#waybar {
+  padding: 8px 12px;
+  background-color: rgba(30, 30, 30, 0.85);
+  border-radius: 10px;
+  margin: 0;
+}
+
+#wlr-workspaces button {
+  padding: 4px 8px;
+  margin: 2px 4px;
+  border-radius: 6px;
+  background-color: rgba(50, 50, 50, 0.4);
+  color: #cccccc;
+}
+
+#wlr-workspaces button.active {
+  background-color: rgba(255, 255, 255, 0.2);
+  color: #ffffff;
+}
+
+#network, #battery, #wireplumber, #clock {
+  background-color: rgba(60, 60, 60, 0.5);
+  border-radius: 6px;
+  padding: 3px 10px;
+  margin: 0 4px;
+}

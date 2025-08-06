@@ -1,0 +1,51 @@
+{
+  "layer": "top",
+  "position": "top",
+
+  "modules-left": ["custom/container", "wlr/workspaces"],
+  "modules-center": [],
+  "modules-right": ["network", "battery", "wireplumber", "clock"],
+
+  "custom/container": {
+    "format": "",
+    "class": "custom-container"
+  },
+
+  "wlr/workspaces": {
+    "format": "{id}",
+    "on-click": "activate",
+    "sort-by-number": true,
+    "all-outputs": true
+  },
+
+  "network": {
+    "format-wifi": "{essid} {signalStrength}%",
+    "format-ethernet": "LAN verbunden",
+    "format-disconnected": "kein Netz",
+    "tooltip-format": "{ifname} / {ipaddr}",
+    "tooltip": false
+  },
+
+  "battery": {
+    "format": "{icon} {capacity}%",
+    "tooltip": false,
+    "format-icons": ["", "", "", "", ""]
+  },
+
+  "wireplumber": {
+    "format": "{icon} {volume}%",
+    "format-muted": " muted",
+    "format-icons": {
+      "default": "",
+      "headphones": ""
+    },
+    "tooltip": false
+  },
+
+  "clock": {
+    "format": "{:%H:%M | %d.%m.%Y}",
+    "tooltip-format": "{:%A, %d. %B %Y}",
+    "interval": 60,
+    "tooltip": false
+  }
+}
