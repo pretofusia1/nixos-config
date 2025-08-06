@@ -23,9 +23,11 @@
 
   environment.systemPackages = with pkgs; [
     git
-    vim
+    nano
     curl
     wget
+    firefox
+    thunar
   ];
 
   system.stateVersion = "24.05";
