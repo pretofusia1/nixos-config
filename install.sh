@@ -1,13 +1,13 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-# ✳️ Partitionen anpassen
+# ✳️ Partitionen definieren
 DISK_BOOT="/dev/nvme0n1p1"
 DISK_ROOT="/dev/nvme0n1p2"
 DISK_HOME="/dev/nvme0n1p4"
 MNT="/mnt"
 
-echo "🧊 NixOS Install Script für Flake-basiertes System"
+echo "🧊 Minimal-NixOS-Installationsskript (Flake-basiert)"
 
 # 🔐 Sicherheitsabfrage zum Formatieren
 read -rp "⚠️ Möchtest du die ROOT-Partition ($DISK_ROOT) formatieren? [y/N]: " CONFIRM_ROOT
@@ -32,16 +32,22 @@ mount "$DISK_HOME" $MNT/home
 mkdir -p $MNT/boot/efi
 mount "$DISK_BOOT" $MNT/boot/efi
 
-# 🌐 Netzwerk
-echo "🌐 Netzwerk starten (du kannst vorher nmtui verwenden)..."
-systemctl start NetworkManager || true
+# 🌍 Internetverbindung prüfen
+echo "🌐 Prüfe Internetverbindung zu github.com..."
+if ! ping -c 1 github.com >/dev/null 2>&1; then
+    echo "❌ Keine Internetverbindung. Bitte Netzwerk manuell konfigurieren (z. B. mit 'ip', 'wpa_supplicant' oder 'nmtui')."
+    exit 1
+fi
 
 # 📥 Konfiguration klonen
 echo "📥 Klone Konfiguration von GitHub..."
 rm -rf $MNT/etc/nixos
-git clone https://github.com/pretofusia1/nixos-config $MNT/etc/nixos
+if ! git clone https://github.com/pretofusia1/nixos-config $MNT/etc/nixos; then
+    echo "❌ Fehler: Konnte Repository nicht klonen. Prüfe Netzwerk oder Repository-Zugriff!"
+    exit 1
+fi
 
-# ⚙️ Hardware-Konfiguration nur erzeugen, wenn nicht vorhanden
+# ⚙️ Hardware-Konfiguration erzeugen (nur wenn nicht vorhanden)
 if [[ ! -f "$MNT/etc/nixos/hardware-configuration.nix" ]]; then
     echo "⚙️ Generiere hardware-configuration.nix..."
     nixos-generate-config --root $MNT
@@ -49,7 +55,7 @@ else
     echo "✔️ hardware-configuration.nix bereits vorhanden, überspringe..."
 fi
 
-# 🛠 Installation starten
+# 🚀 NixOS installieren
 echo "🚀 Starte NixOS-Installation mit Flake..."
 nixos-install --flake $MNT/etc/nixos#preto
 
