@@ -1,0 +1,9 @@
+/result
+*.drv
+*.log
+*.lock
+hardware-configuration.nix
+.cache/
+.secrets/
+*.swp
+*~
