@@ -1,22 +1,23 @@
 {
-  description = "Preto's NixOS with Hyprland and flakes";
-
-  inputs = {
-    nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
-    home-manager.url = "github:nix-community/home-manager";
-    home-manager.inputs.nixpkgs.follows = "nixpkgs";
-  };
-
-  outputs = { nixpkgs, home-manager, ... }: {
-    nixosConfigurations.preto = nixpkgs.lib.nixosSystem {
+  outputs = { self, nixpkgs, home-manager, ... }:
+    let
       system = "x86_64-linux";
-      modules = [
-        ./configuration.nix
-        home-manager.nixosModules.home-manager
-        {
-          home-manager.users.preto = import ./home.nix;
-        }
-      ];
+      pkgs = import nixpkgs { inherit system; };
+    in {
+      nixosConfigurations = {
+        preto = nixpkgs.lib.nixosSystem {
+          inherit system;
+          modules = [
+            ./hosts/preto/hardware-configuration.nix
+            ./hosts/preto/configuration.nix
+            home-manager.nixosModules.home-manager
+            {
+              home-manager.useGlobalPkgs = true;
+              home-manager.useUserPackages = true;
+              home-manager.users.preto = import ./home.nix;
+            }
+          ];
+        };
+      };
     };
-  };
 }
