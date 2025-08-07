@@ -1,33 +1,28 @@
 { config, pkgs, ... }:
 
 {
-  imports = [ ./hardware-configuration.nix ];
-
-  nix.settings.experimental-features = [ "nix-command" "flakes" ];
-
-  networking.hostName = "nixos";
+  # Hier alle deine bisherigen Einstellungen,
+  # nur ohne `imports = [ ./hardware-configuration.nix ];`
+  # Beispiel aus deiner hochgeladenen Datei:
+  
+  networking.hostName = "preto";
   time.timeZone = "Europe/Berlin";
+
   i18n.defaultLocale = "de_DE.UTF-8";
+  console.keyMap = "de";
 
   services.xserver.enable = true;
-  services.xserver.displayManager.greetd.enable = true;
-  services.xserver.windowManager.hyprland.enable = true;
+  services.xserver.displayManager.sddm.enable = true;
+  services.xserver.desktopManager.plasma5.enable = true;
 
   users.users.preto = {
     isNormalUser = true;
-    extraGroups = [ "wheel" "networkmanager" ];
-    initialPassword = "changeme"; # beim ersten Login ändern!
+    extraGroups = [ "wheel" ];
   };
 
-  networking.networkmanager.enable = true;
-
   environment.systemPackages = with pkgs; [
+    vim
     git
-    nano
-    curl
-    wget
-    firefox
-    thunar
   ];
 
   system.stateVersion = "24.05";
