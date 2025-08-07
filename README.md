@@ -8,12 +8,28 @@ Mein persönliches NixOS-Flake-Setup für Hyprland – inklusive Home Manager, W
 
 ---
 
-### 🔧 Installation mit `install.sh`
+### 🔧 Installation `
 
 ```bash
-curl -O https://raw.githubusercontent.com/pretofusia1/nixos-config/main/install.sh
-chmod +x install.sh
-./install.sh
+lsblk -f # Dateisysteme anzeigen
+### nvme0n1p1 je nach dem anpassen
+
+### Formatieren
+
+sudo mkfs.vfat -F32 /dev/nvme0n1p1             # EFI 
+sudo mkfs.ext4 /dev/nvme0n1p2                  # Root
+sudo mkswap /dev/nvme0n1p3                     # Swap
+
+###mount partitionen
+
+sudo mount /dev/nvme0n1p2 /mnt
+sudo mkdir -p /mnt/boot/efi
+sudo mount /dev/nvme0n1p1 /mnt/boot/efi
+sudo mkdir -p /mnt/home
+sudo mount /dev/nvme0n1p4 /mnt/home 
+
+### Install
+nixos-install --flake github:pretofusia1/nixos-config#preto
 
 # 🧊 nixos-config
 
