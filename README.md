@@ -12,9 +12,9 @@ Mein persönliches NixOS-Flake-Setup für Hyprland – inklusive Home Manager, W
 
 ```bash
 lsblk -f # Dateisysteme anzeigen
-### nvme0n1p1 je nach dem anpassen
 
-### Formatieren
+
+### Formatieren ### nvme0n1p1 etc. je nach dem anpassen
 
 sudo mkfs.vfat -F32 /dev/nvme0n1p1             # EFI 
 sudo mkfs.ext4 /dev/nvme0n1p2                  # Root
