@@ -15,20 +15,26 @@
         preto = nixpkgs.lib.nixosSystem {
           inherit system;
           modules = [
+            # UEFI-Boot
             {
               boot.loader.systemd-boot.enable = true;
               boot.loader.efi.canTouchEfiVariables = true;
             }
+
+            # Deine Hosts-Dateien (pfade müssen existieren!)
             ./hosts/preto/hardware-configuration.nix
             ./hosts/preto/configuration.nix
+
+            # Home Manager einbinden
             home-manager.nixosModules.home-manager
             {
               home-manager.useGlobalPkgs = true;
               home-manager.useUserPackages = true;
               home-manager.users.preto = import ./home.nix;
+            }
 
-              # Quickfix: ersetze fehlendes pkgs.replaceVars durch substituteAll
-              nixpkgs.overlays = [
+            # Quickfix: pkgs.replaceVars bereitstellen (Alias für substituteAll)
+            { nixpkgs.overlays = [
                 (final: prev: {
                   replaceVars = file: vars: prev.substituteAll (vars // { src = file; });
                 })
