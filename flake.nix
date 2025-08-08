@@ -10,36 +10,48 @@
   outputs = { self, nixpkgs, home-manager, ... }:
     let
       system = "x86_64-linux";
-    in {
+      lib = nixpkgs.lib;
+    in
+    {
       nixosConfigurations = {
-        preto = nixpkgs.lib.nixosSystem {
+        preto = lib.nixosSystem {
           inherit system;
           modules = [
             # UEFI-Boot
-            {
+            ({ ... }: {
               boot.loader.systemd-boot.enable = true;
               boot.loader.efi.canTouchEfiVariables = true;
-            }
+            })
 
-            # Deine Hosts-Dateien (pfade müssen existieren!)
+            # Host-Module
             ./hosts/preto/hardware-configuration.nix
             ./hosts/preto/configuration.nix
 
-            # Home Manager einbinden
+            # Home Manager einbinden + mako-Override
             home-manager.nixosModules.home-manager
-            {
+            ({ pkgs, ... }: {
               home-manager.useGlobalPkgs = true;
               home-manager.useUserPackages = true;
-              home-manager.users.preto = import ./home.nix;
-            }
 
-            # Quickfix: pkgs.replaceVars bereitstellen (Alias für substituteAll)
-            { nixpkgs.overlays = [
+              home-manager.users.preto = { ... }: {
+                # Upstream-HM-Modul für mako deaktivieren,
+                # stattdessen lokales Modul benutzen
+                disabledModules = [ "services/mako.nix" ];
+                imports = [
+                  ./home.nix
+                  ./hm-overrides/services/mako.nix
+                ];
+              };
+            })
+
+            # Overlay: pkgs.replaceVars als Alias für substituteAll bereitstellen
+            ({ ... }: {
+              nixpkgs.overlays = [
                 (final: prev: {
                   replaceVars = file: vars: prev.substituteAll (vars // { src = file; });
                 })
               ];
-            }
+            })
           ];
         };
       };
