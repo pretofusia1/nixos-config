@@ -1,10 +1,11 @@
 { config, pkgs, ... }:
 
 {
-  # Hier alle deine bisherigen Einstellungen,
-  # nur ohne `imports = [ ./hardware-configuration.nix ];`
-  # Beispiel aus deiner hochgeladenen Datei:
-  
+  # WICHTIG: Hardware-Config importieren, damit u.a. fileSystems."/” vorhanden ist
+  imports = [
+    ./hardware-configuration.nix
+  ];
+
   networking.hostName = "preto";
   time.timeZone = "Europe/Berlin";
 
