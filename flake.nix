@@ -16,6 +16,7 @@
         preto = nixpkgs.lib.nixosSystem {
           inherit system;
           modules = [
+            { boot.loader.systemd-boot.enable = true; boot.loader.efi.canTouchEfiVariables = true; boot.loader.grub.enable = false; }
             ./hosts/preto/hardware-configuration.nix
             ./hosts/preto/configuration.nix
             home-manager.nixosModules.home-manager
