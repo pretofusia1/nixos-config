@@ -3,6 +3,8 @@
 {
   home.username = "preto";
   home.homeDirectory = "/home/preto";
+  disabledModules = [ "services/mako.nix" ];
+  imports = [ ./hm-overrides/services/mako.nix ];
 
   programs.home-manager.enable = true;
 
