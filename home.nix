@@ -3,6 +3,8 @@
 {
   home.username = "preto";
   home.homeDirectory = "/home/preto";
+
+  # Disable upstream Home Manager mako module and import our fixed override
   disabledModules = [ "services/mako.nix" ];
   imports = [ ./hm-overrides/services/mako.nix ];
 
