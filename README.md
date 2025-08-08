@@ -14,22 +14,38 @@ Mein persönliches NixOS-Flake-Setup für Hyprland – inklusive Home Manager, W
 lsblk -f # Dateisysteme anzeigen
 
 
-### Formatieren ### nvme0n1p1 etc. je nach dem anpassen
-
-sudo mkfs.vfat -F32 /dev/nvme0n1p1             # EFI 
-sudo mkfs.ext4 /dev/nvme0n1p2                  # Root
-sudo mkswap /dev/nvme0n1p3                     # Swap
-
-###mount partitionen
+### Formatieren und mounten ### nvme0n1p1 etc. je nach dem anpassen
+sudo mkfs.vfat -F32 /dev/nvme0n1p1          # EFI
+sudo mkfs.ext4 /dev/nvme0n1p2               # ROOT
+sudo mkswap /dev/nvme0n1p3 && sudo swapon /dev/nvme0n1p3
 
 sudo mount /dev/nvme0n1p2 /mnt
 sudo mkdir -p /mnt/boot/efi
 sudo mount /dev/nvme0n1p1 /mnt/boot/efi
 sudo mkdir -p /mnt/home
-sudo mount /dev/nvme0n1p4 /mnt/home 
+sudo mount /dev/nvme0n1p4 /mnt/home         # <- /home behalten
+
+### Repro clonen
+cd ~
+git clone https://github.com/pretofusia1/nixos-config.git
+cd nixos-config
+
+### Flake vorbereiten
+sudo nixos-generate-config --root /mnt
+mkdir -p hosts/preto
+cp /mnt/etc/nixos/hardware-configuration.nix hosts/preto/hardware-configuration.nix
+
+git config --global user.name "Preto"
+git config --global user.email "preto@install"
+git add hosts/preto/hardware-configuration.nix
+git commit -m "Add hardware-configuration.nix"
+
+### Prüfen
+git status   # sollte "working tree clean" zeigen
 
 ### Install
-nixos-install --flake github:pretofusia1/nixos-config#preto
+sudo nixos-install --flake ~/nixos-config#preto
+
 
 # 🧊 nixos-config
 
